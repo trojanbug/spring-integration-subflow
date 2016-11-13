@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xsi:schemaLocation="http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <int:channel id="inputChannel"/>
+
+    <bean id="subflow" class="org.springframework.integration.subflow.Subflow">
+        <property name="configLocations" value="classpath:/spring/flow-test-config-context.xml"/>
+        <property name="flowInputChannel" ref="inputChannel"/>
+        <property name="flowOutputChannelsMap">
+            <map>
+                <entry key="outputChannel" value-ref="outputChannel"/>
+            </map>
+        </property>
+    </bean>
+
+    <int:channel id="outputChannel">
+        <int:queue capacity="2" />
+    </int:channel>
+</beans>
