@@ -38,6 +38,7 @@ public class Subflow
 
     private AbstractRefreshableConfigApplicationContext flowContext;
     private ApplicationContext applicationContext;
+    private ApplicationContext parentContext = null;
 
     public Subflow() {
         this(null);
@@ -66,7 +67,11 @@ public class Subflow
 
         Assert.notEmpty(configLocations, "configLocations cannot be empty");
 
-        flowContext = new ClassPathXmlApplicationContext(applicationContext);
+        if (parentContext==null) {
+            parentContext = applicationContext;
+        }
+
+        flowContext = new ClassPathXmlApplicationContext(parentContext);
 
         overrideBeans();
 
@@ -142,8 +147,11 @@ public class Subflow
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public synchronized void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+        if (parentContext==null) {
+            parentContext = applicationContext;
+        }
     }
 
     public ApplicationContext getFlowContext() {
@@ -202,5 +210,13 @@ public class Subflow
 
     public void setFlowInputChannelName(String flowInputChannelName) {
         this.flowInputChannelName = flowInputChannelName;
+    }
+
+    public synchronized ApplicationContext getParentApplicationContext() {
+        return parentContext;
+    }
+
+    public synchronized void setParentApplicationContext(ApplicationContext parentContext) {
+        this.parentContext = parentContext;
     }
 }

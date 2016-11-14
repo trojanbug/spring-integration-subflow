@@ -19,13 +19,23 @@ public class SubflowBasicTest extends AbstractTestNGSpringContextTests {
     @Resource(name = "inputChannel")
     MessageChannel inputChannel;
 
-    @Resource(name = "outputChannel")
-    PollableChannel outputChannel;
+    @Resource(name = "outputChannel1")
+    PollableChannel outputChannel1;
+
+    @Resource(name = "outputChannel2")
+    PollableChannel outputChannel2;
 
     @Test
     public void testBasicSubflow() {
-        inputChannel.send(MessageBuilder.withPayload("TEST").build());
-        Message msgReceived = outputChannel.receive(2000L);
-        Assert.assertEquals("TEST_RESPONSE", msgReceived.getPayload());
+        inputChannel.send(MessageBuilder.withPayload("REQUEST1").build());
+        Message msgReceived = outputChannel1.receive(2000L);
+        Assert.assertEquals("REQUEST1_RESPONSE1", msgReceived.getPayload());
+    }
+
+    @Test
+    public void testAlternativeOutputChannelSubflow() {
+        inputChannel.send(MessageBuilder.withPayload("REQUEST2").build());
+        Message msgReceived = outputChannel2.receive(2000L);
+        Assert.assertEquals("REQUEST2_RESPONSE2", msgReceived.getPayload());
     }
 }

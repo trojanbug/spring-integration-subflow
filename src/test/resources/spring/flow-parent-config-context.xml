@@ -9,15 +9,22 @@
 
     <bean id="subflow" class="org.springframework.integration.subflow.Subflow">
         <property name="configLocations" value="classpath:/spring/flow-test-config-context.xml"/>
+        <!-- mapping of external input channels to flow internal ['inputChannel' is the default internal input channel name] -->
         <property name="flowInputChannel" ref="inputChannel"/>
         <property name="flowOutputChannelsMap">
             <map>
-                <entry key="outputChannel" value-ref="outputChannel"/>
+                <!-- mapping of flow internal channels outputs to external -->
+                <entry key="outputChannel1" value-ref="outputChannel1"/>
+                <entry key="outputChannel2" value-ref="outputChannel2"/>
             </map>
         </property>
     </bean>
 
-    <int:channel id="outputChannel">
+    <int:channel id="outputChannel1">
+        <int:queue capacity="2" />
+    </int:channel>
+
+    <int:channel id="outputChannel2">
         <int:queue capacity="2" />
     </int:channel>
 </beans>
