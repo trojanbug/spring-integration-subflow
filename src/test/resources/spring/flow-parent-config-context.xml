@@ -18,7 +18,15 @@
                 <entry key="outputChannel2" value-ref="outputChannel2"/>
             </map>
         </property>
+        <property name="parentApplicationContext" ref="testParentApplicationContext"/>
     </bean>
+
+    <bean id="testParentApplicationContext" class="org.springframework.context.support.ClassPathXmlApplicationContext">
+        <constructor-arg name="configLocations" value="classpath:/spring/empty-application-context.xml"/>
+        <constructor-arg name="parent" value="#{thisApplicationContextWrapper.wrappedContext}"/>
+    </bean>
+
+    <bean id="thisApplicationContextWrapper" class="org.springframework.utils.ApplicationContextExposingWrapper" />
 
     <int:channel id="outputChannel1">
         <int:queue capacity="2" />
